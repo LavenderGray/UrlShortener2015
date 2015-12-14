@@ -1,0 +1,12 @@
+{
+	"name": "angular",
+	"version": "1.0.0",
+	"dependencies": {
+		"bootstrap": "latest",
+		"angular": "latest",
+		"angular-route": "latest",
+		"crypto-js": "latest",
+		"typeahead.js": "latest",
+		"components-font-awesome": "latest"
+	}
+}

@@ -27,9 +27,11 @@ app.use(methodOverride('X-HTTP-Method-Override'));
 app.use(express.static(__dirname + '/public'));
 
 // routes ==================================================
-var apiRoute=require('./app/routes/APIURLRoutes'); // pass our application into our routes
+var apiRouteURL=require('./app/routes/APIURLRoutes'); // pass our application into our routes
+var apiRouteStadist=require('./app/routes/APIStatisticsRoutes'); // pass our application into our routes
 var mainRoute=require('./app/routes/mainRoutes'); // pass our application into our routes
-app.use('/API',apiRoute);
+app.use('/API',apiRouteURL);
+app.use('/API',apiRouteStadist);
 app.use('/',mainRoute);
 
 // start app ===============================================

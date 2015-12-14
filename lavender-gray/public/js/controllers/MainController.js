@@ -3,9 +3,6 @@ if(Modulo==undefined){var Modulo = angular.module('Controllers', []);}
 /*
  * Main Controller
  */
- function generateURL(){
-
- }
  Modulo.controller('MainController', function($scope, $rootScope,
                                                             $http,$location) {
    $rootScope.PageName = "Shorter";
@@ -19,7 +16,6 @@ if(Modulo==undefined){var Modulo = angular.module('Controllers', []);}
        url: url
      }).
      success(function(res, status, headers, config) {
-       console.log(res.redirect);
        if(res.err==0){
          $scope.idURL=res.redirect.id;
          $scope.result="";

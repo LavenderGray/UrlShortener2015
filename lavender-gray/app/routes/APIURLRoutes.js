@@ -3,7 +3,6 @@ var mongoose = require('mongoose');
 var request = require('request');
 var crypto = require('crypto');
 
-var configuration = require('../../configuration');
 var REDIRECT_ID_SIZE = 5;
 
 module.exports = (function() {
@@ -36,7 +35,6 @@ module.exports = (function() {
       redirect.findOne({
         id: id
       }).exec({}, function(err, red) {
-        console.log(red);
         if (!err && red != undefined) {
           ret({
             err: 0,
@@ -56,7 +54,6 @@ module.exports = (function() {
   }
   app.get('/redirect', function(req, res) {
     var id = getVariable(req, 'id');
-
     getRedirection(id, function(r) {
       res.json(r)
     });

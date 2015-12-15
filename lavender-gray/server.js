@@ -31,7 +31,7 @@ var apiRouteURL=require('./app/routes/APIURLRoutes'); // pass our application in
 var apiRouteStadist=require('./app/routes/APIStatisticsRoutes'); // pass our application into our routes
 var mainRoute=require('./app/routes/mainRoutes'); // pass our application into our routes
 app.use('/API',apiRouteURL);
-app.use('/API',apiRouteStadist);
+app.use('/',apiRouteStadist);
 app.use('/',mainRoute);
 
 // start app ===============================================

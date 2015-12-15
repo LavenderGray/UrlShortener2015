@@ -10,7 +10,7 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider',
       })
       // Statistics url
       .when('/:id\\+', {
-        templateUrl: 'views/Shorter/statistics.html',
+        templateUrl: 'views/Statistics/statistics.html',
         controller: 'StatisticsController',
         reloadOnSearch: false
       })

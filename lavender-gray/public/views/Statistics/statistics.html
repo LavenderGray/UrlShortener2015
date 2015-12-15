@@ -1,0 +1,9 @@
+<h2>
+  Statistics
+</h2>
+{{msg}}
+<div ng-if="statistics!=undefined">
+  Visits: {{statistics.count}} </br>
+  URL: <a ng-href="{{statistics.url}}">{{statistics.url}}<a/> </br>
+  Created: {{statistics.created | date:'M/d/yy h:mm a'}}
+</div>

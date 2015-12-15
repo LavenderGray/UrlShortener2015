@@ -4,6 +4,8 @@ if(Modulo==undefined){var Modulo = angular.module('Controllers', []);}
  * Shorter Controller
  */
 Modulo.controller('RedirectController', function($scope, $routeParams, $rootScope, $http, $location, $window) {
+  $rootScope.PageName = "Shorter - Redirect";
+  $rootScope.TitleName = $rootScope.PageName;
   $http.get('/API/redirect', {
     params: {id: $routeParams.id}
   }).

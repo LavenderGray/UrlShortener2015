@@ -64,14 +64,9 @@ module.exports = (function() {
    * url: url of redirect
    * return
    *       {err: 0,redirect}: all ok
-   *       {err: 1}: not perms
+   *       {err: 1}: already exist
    *       {err: 2}: wrong data
-   *       {err: 3}: already exist
    */
-  function urlCorrect(s) {
-    var regexp = /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
-    return regexp.test(s);
-  }
   function randomSecret(n) {
     return crypto.randomBytes(Math.ceil(n / 2)).toString('hex').slice(0, n);
   }
@@ -87,26 +82,25 @@ module.exports = (function() {
       }
     });
   }
-
-  function createRedirection(url, ret) {
+  function getIP(req) {
+    return (req.headers["X-Forwarded-For"] || req.headers["x-forwarded-for"] || req.client.remoteAddress);
+  }
+  function createRedirection(req, url, ret) {
     if (url != undefined) {
-      if(!urlCorrect(url)){
-        ret({err: 2});
-        return;
-      }
       redirect.findOne({
         url: url
       }).exec({}, function(err2, red) {
         if (red != undefined) {
           ret({
-            err: 3,
+            err: 1,
             redirect: red
           });
         } else {
           generateUniqueId(function(key) {
             var nred = new redirect({
               url: url,
-              id: key
+              id: key,
+              creator: getIP(req)
             });
             nred.save();
             ret({
@@ -125,7 +119,7 @@ module.exports = (function() {
   }
   app.put('/redirect', function(req, res) {
     var url = getVariable(req, 'url');
-    createRedirection(url, function(r) {
+    createRedirection(req, url, function(r) {
       res.json(r);
     });
   });

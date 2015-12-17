@@ -18,5 +18,13 @@
     "express-useragent": "0.2.4",
     "geoip-lite": "1.1.6",
     "bower": "1.7.1"
+  },
+  "devDependencies":{
+    "mocha": "2.3.*",
+    "chai":"3.2.0",
+    "chai-http":"1.0.0"
+  }  ,"scripts": {
+    "start": "node server.js",
+    "test": "node_modules/.bin/mocha"
   }
 }

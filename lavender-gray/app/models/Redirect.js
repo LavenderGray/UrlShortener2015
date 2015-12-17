@@ -11,7 +11,7 @@ module.exports = mongoose.model('Redirect', {
   },url: {
     type: String,
     index: { unique: true }
-  },ip: {
+  },creator: {
     type: String
   },created: {
     type: Date,

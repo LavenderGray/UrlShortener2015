@@ -19,12 +19,14 @@ if(Modulo==undefined){var Modulo = angular.module('Controllers', []);}
        if(res.err==0){
          $scope.idURL=res.redirect.id;
          $scope.result="";
-       } else if (res.err==3){
+       } else if (res.err==1){
          $scope.idURL=res.redirect.id;
          $scope.result="La URL ya había sido acortada";
-       } else {
+       } else if(res.err==2){
+         $scope.result = "URL incorrecta";
+       }else{
          $scope.idURL="";
-         $scope.result="URL incorrecta";
+         $scope.result="Error interno";
        }
      }).
      error(function(data, status, headers, config) {

@@ -96,19 +96,28 @@ module.exports = (function() {
    *       {err: 1}: no exist redirection
    *       {err: 2}: wrong format
    */
+
   function getStatistics(red, ret) {
+    var Schema = mongoose.Schema;
+
     visit.find({
-      redirect: red._id
+      redirect: red
     }).exec({}, function(err, vis) {
-      var res = {
-        count: vis != undefined?vis.length:0,
-        url: red.url,
-        created: red.created
-      };
-      ret({
-        err: 0,
-        statistics: res
+      visit.find({
+        redirect: red
+      }).distinct('ip', function(err, vis2) {
+        var res = {
+          count: vis != undefined ? vis.length : 0,
+          unique_visitors: vis2 != undefined ? vis2.length : 0,
+          url: red.url,
+          created: red.created
+        };
+        ret({
+          err: 0,
+          statistics: res
+        });
       });
+
     });
   }
   app.get('/:id\\+', function(req, res, next) {

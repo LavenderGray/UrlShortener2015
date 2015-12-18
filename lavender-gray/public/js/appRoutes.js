@@ -8,6 +8,11 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider',
         controller: 'MainController',
         reloadOnSearch: false
       })
+      .when('/QRGenerate', {
+        templateUrl: 'views/QRGenerator/IndexGenerator.html',
+        controller: 'QRController',
+        reloadOnSearch: false
+      })
       // Statistics url
       .when('/:id\\+', {
         templateUrl: 'views/Statistics/statistics.html',

@@ -31,6 +31,8 @@ var apiRouteURL=require('./app/routes/APIURLRoutes'); // pass our application in
 var apiRouteStadist=require('./app/routes/APIStatisticsRoutes'); // pass our application into our routes
 var apiRouteCheckURL=require('./app/routes/CheckURLRoutes'); // pass our application into our routes
 var mainRoute=require('./app/routes/mainRoutes'); // pass our application into our routes
+var QRgenerate=require('./app/routes/QRgenerator');
+app.use('/API',QRgenerate);
 app.use('/API',apiRouteCheckURL);
 app.use('/API',apiRouteURL);
 app.use('/',apiRouteStadist);

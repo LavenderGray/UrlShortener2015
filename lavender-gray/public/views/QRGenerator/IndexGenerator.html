@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>QRGenerator</h1>
+
+<form>
+    <fieldset>
+        <input type="hidden" name="color" value="000000">
+        <input type="hidden" name="dataType" value="url">
+        <input type="hidden" name="effect" value="0">
+        <input type="hidden" name="size" value="20">
+        url:<br>
+        <input type="text" name="data" value="http://" ng-model="url">
+        <br>
+        <span class="input-group-btn">
+                <button class="btn btn-lg btn-primary" type="submit" ng-click='generar()'>Generar</button>
+            </span>
+        <img src="{{url_img}}" ng-if="url_img!=''">
+    </fieldset>
+</form>
+</body>
+</html>

@@ -18,28 +18,23 @@ module.exports = (function() {
   }
 
   /*
-   * PUT /redirect
+   * POST /redirect
    * url: url of redirect
    * return
-   *       {err: 3}: Is not a valid URL
+   *       400: Is not a valid URL
    */
   function urlCorrect(s) {
     var regexp = /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
     return regexp.test(s);
   }
-  app.put('/redirect', function(req, res, next) {
+  app.post('/redirect', function(req, res, next) {
     var url = getVariable(req, 'url');
     if (!urlCorrect(url)) {
-      res.json({
-        err: 2
-      });
+      res.status(400).end();
     } else {
-
       request(url, function(error, response, body) {
         if (error) {
-          res.json({
-            err: 2
-          }).end();
+          res.status(400).end();
         } else {
           next();
         }

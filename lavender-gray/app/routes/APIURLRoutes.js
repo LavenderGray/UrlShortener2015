@@ -26,9 +26,9 @@ module.exports = (function() {
    * GET /redirect
    * id: id of redirection
    * return
-   *       {err: 0,redirect}: all ok
-   *       {err: 1}: no exist redirection
-   *       {err: 2}: wrong format
+   *       {redirect}: all ok
+   *       404: no exist redirection
+   *       400: wrong format
    */
   function getRedirection(id, ret) {
     if (id != undefined) {
@@ -36,36 +36,35 @@ module.exports = (function() {
         id: id
       }).exec({}, function(err, red) {
         if (!err && red != undefined) {
-          ret({
-            err: 0,
+          ret.json({
             redirect: red
           });
         } else {
-          ret({
+          ret.status(404).end();
+          /*ret.json({
             err: 1
-          });
+          });*/
         }
       });
     } else {
-      ret({
+      ret.status(400).end();
+      /*ret.json({
         err: 2
-      });
+      });*/
     }
   }
   app.get('/redirect', function(req, res) {
     var id = getVariable(req, 'id');
-    getRedirection(id, function(r) {
-      res.json(r)
-    });
+    getRedirection(id, res);
   });
 
   /*
-   * PUT /redirect
+   * POST /redirect
    * url: url of redirect
    * return
-   *       {err: 0,redirect}: all ok
-   *       {err: 1}: already exist
-   *       {err: 2}: wrong data
+   *       {create: true,redirect}: all ok
+   *       {create: false}: already exist
+   *       400: wrong data
    */
   function randomSecret(n) {
     return crypto.randomBytes(Math.ceil(n / 2)).toString('hex').slice(0, n);
@@ -91,8 +90,8 @@ module.exports = (function() {
         url: url
       }).exec({}, function(err2, red) {
         if (red != undefined) {
-          ret({
-            err: 1,
+          ret.json({
+            create: false,
             redirect: red
           });
         } else {
@@ -103,8 +102,8 @@ module.exports = (function() {
               creator: getIP(req)
             });
             nred.save();
-            ret({
-              err: 0,
+            ret.json({
+              create: true,
               redirect: nred
             });
           });
@@ -112,16 +111,15 @@ module.exports = (function() {
       });
 
     } else {
-      ret({
+      ret.status(400).end();
+      /*ret({
         err: 2
-      });
+      });*/
     }
   }
-  app.put('/redirect', function(req, res) {
+  app.post('/redirect', function(req, res) {
     var url = getVariable(req, 'url');
-    createRedirection(req, url, function(r) {
-      res.json(r);
-    });
+    createRedirection(req, url, res);
   });
 
   return app

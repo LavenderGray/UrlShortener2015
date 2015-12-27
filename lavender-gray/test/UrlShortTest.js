@@ -24,6 +24,8 @@ describe("Index test", function() {
 });
 
 var URLTest = "http://google.es";
+var idTest = "x0x";
+
 var backup = undefined;
 var id;
 
@@ -45,17 +47,15 @@ describe("Redirect test", function() {
       function(done) {
 
         chai.request(app)
-          .put('/API/redirect')
+          .post('/API/redirect')
           .send({
             'url': URLTest
           })
           .end(function(err, res) {
             res.should.have.status(200);
-
-
             var data = res.body;
             id = data.redirect.id;
-            assert.equal(data.err, 0);
+            assert.equal(data.create, true);
             done();
           });
       }
@@ -63,14 +63,14 @@ describe("Redirect test", function() {
     it("Try to create exist shortURL",
       function(done) {
         chai.request(app)
-          .put('/API/redirect')
+          .post('/API/redirect')
           .send({
             'url': URLTest
           })
           .end(function(err, res) {
             res.should.have.status(200);
             var data = res.body;
-            assert.equal(data.err, 1);
+            assert.equal(data.create, false);
             done();
           });
       }
@@ -85,8 +85,19 @@ describe("Redirect test", function() {
           .end(function(err, res) {
             res.should.have.status(200);
             var data = res.body;
-            assert.equal(data.err, 0);
             assert.equal(data.redirect.url, URLTest);
+            done();
+          });
+      }
+    ),it("Use wrong shortURL",
+      function(done) {
+        chai.request(app)
+          .get('/API/redirect')
+          .send({
+            'id': idTest
+          })
+          .end(function(err, res) {
+            res.should.have.status(404);
             done();
           });
       }

@@ -92,9 +92,9 @@ module.exports = (function() {
    *    'HTML': to print de statistics in HTML format
    *    'JSON': to print de statistics in JSON format
    * return
-   *       {err: 0,redirect}: all ok
-   *       {err: 1}: no exist redirection
-   *       {err: 2}: wrong format
+   *       {statistics}: all ok
+   *       404: no exist redirection
+   *       400: wrong format
    */
 
   function getStatistics(red, ret) {
@@ -112,10 +112,7 @@ module.exports = (function() {
           url: red.url,
           created: red.created
         };
-        ret({
-          err: 0,
-          statistics: res
-        });
+        ret(res);
       });
 
     });
@@ -127,12 +124,15 @@ module.exports = (function() {
       return next();
     } else if (format == 'JSON') {
       getRedirection(id, function(red) {
-        if (red.err != 0) {
-          res.json(red);
-        } else {
+        if (red.err == 0) {
           getStatistics(red.redirect, function(sta) {
             res.json(sta);
           });
+
+        } else if(res.err == 1){
+          res.status(404).end();
+        } else if(res.err == 2){
+          res.status(400).end();
         }
       })
     } else {

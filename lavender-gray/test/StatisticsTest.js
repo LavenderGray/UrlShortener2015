@@ -49,9 +49,8 @@ describe("Statistics test", function() {
             res.should.have.status(200);
 
             var data = res.body;
-            assert.equal(data.err, 0);
-            assert.equal(data.statistics.count, 0);
-            assert.equal(data.statistics.url, URLTest);
+            assert.equal(data.count, 0);
+            assert.equal(data.url, URLTest);
             done();
           });
       }
@@ -59,7 +58,7 @@ describe("Statistics test", function() {
     it("Test visits",
       function(done) {
         chai.request(app)
-          .get('/' + idTest)   // Visit
+          .get('/' + idTest) // Visit
           .end(function(errU, resU) {
             chai.request(app)
               .get('/' + idTest + "+")
@@ -70,9 +69,8 @@ describe("Statistics test", function() {
                 res.should.have.status(200);
 
                 var data = res.body;
-                assert.equal(data.err, 0);
-                assert.equal(data.statistics.count, 1);
-                assert.equal(data.statistics.url, URLTest);
+                assert.equal(data.count, 1);
+                assert.equal(data.url, URLTest);
                 done();
               })
           })

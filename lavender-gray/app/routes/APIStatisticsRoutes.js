@@ -96,28 +96,117 @@ module.exports = (function() {
    *       404: no exist redirection
    *       400: wrong format
    */
+  function getStatistics(red, ret, extraMatch) {
+    var lastMonth = new Date().getTime() - 30 * 24 * 60 * 60 * 1000;
+    var match={};
+    if (extraMatch!=undefined) {
+      extraMatch["redirect"]=red._id;
+      match=extraMatch;
+    }else{
+      match = {
+        redirect: red._id
+      };
+    }
+    var base = {
+      id: "redirect",
+      value: "$redirect"
+    };
+    var others = [base, {
+      id: "platform",
+      value: "$platform"
+    }, {
+      id: "country",
+      value: "$country"
+    }, {
+      id: "browser",
+      value: "$browser"
+    }, {
+      id: "ip",
+      value: "$ip"
+    }];
+    var datas = {};
+    datas[base.id] = base.value;
 
-  function getStatistics(red, ret) {
-    var Schema = mongoose.Schema;
-
-    visit.find({
-      redirect: red
-    }).exec({}, function(err, vis) {
-      visit.find({
-        redirect: red
-      }).distinct('ip', function(err, vis2) {
-        var res = {
-          count: vis != undefined ? vis.length : 0,
-          unique_visitors: vis2 != undefined ? vis2.length : 0,
-          url: red.url,
-          created: red.created
-        };
-        ret(res);
-      });
-
+    for (var i = 1; i < others.length; i++) {
+      datas[others[i].id] = others[i].value;
+    }
+    var q = [{
+      $match: match
+    }];
+    q.push({
+      $group: {
+        _id: datas,
+        count: {
+          $sum: 1
+        }
+      }
     });
+
+    var f = visit.aggregate(q);
+
+    f.exec(function(err, res) {
+      if (err) {
+        ret({err: 1});
+        return;
+      }
+      var est={count: 0,
+      url: red.url,
+      created: red.created};
+      for (var i = 0; i < res.length; i++) {
+        for (var o = 0; o < others.length; o++) {
+          var dat = res[i]._id;
+          if(est[others[o].id]==undefined){
+            est[others[o].id]={};
+          }
+          if(est[others[o].id][dat[others[o].id]]==undefined){
+            est[others[o].id][dat[others[o].id]]=0;
+          }
+          est[others[o].id][dat[others[o].id]]+=res[i].count;
+        }
+        est["count"]+=res[i].count;
+      }
+
+      // Hide ip
+      var arr=[];
+      for(var key in est["ip"]){
+        arr.push(est["ip"][key]);
+      }
+      est["ip"]=arr;
+      ret(est);
+      console.log(est);
+    });
+
   }
   app.get('/:id\\+', function(req, res, next) {
+    var id = getVariable(req, 'id');
+    var format = getVariable(req, 'format');
+    if (format == undefined || format == 'HTML') {
+      return next();
+    } else if (format == 'JSON') {
+      getRedirection(id, function(red) {
+        if (red.err == 0) {
+          getStatistics(red.redirect, function(sta) {
+            if (res.err == 1) {
+              res.status(404).end();
+            } else {
+              res.json(sta);
+            }
+          });
+
+        } else if (res.err == 1) {
+          res.status(404).end();
+        } else if (res.err == 2) {
+          res.status(400).end();
+        }
+      })
+    } else {
+      res.status(400).end();
+    }
+  });
+
+
+  app.get('API/statistics', function(req, res, next) {
+    var extraMatch={};
     var id = getVariable(req, 'id');
     var format = getVariable(req, 'format');
     if (format == undefined || format == 'HTML') {
@@ -129,9 +218,9 @@ module.exports = (function() {
             res.json(sta);
           });
 
-        } else if(res.err == 1){
+        } else if (res.err == 1) {
           res.status(404).end();
-        } else if(res.err == 2){
+        } else if (res.err == 2) {
           res.status(400).end();
         }
       })

@@ -7,6 +7,8 @@
 		"angular-route": "latest",
 		"crypto-js": "latest",
 		"typeahead.js": "latest",
-		"components-font-awesome": "latest"
+		"components-font-awesome": "latest",
+		"morris.js": "latest",
+		"raphael": "latest"
 	}
 }

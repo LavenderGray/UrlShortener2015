@@ -3,7 +3,35 @@
 </h2>
 {{msg}}
 <div ng-if="statistics!=undefined">
+  Short URL ID: {{idURLShort}} </br>
   Visits: {{statistics.count}} </br>
+  Unique visitors: {{statistics.ip.length}} </br>
   URL: <a ng-href="{{statistics.url}}">{{statistics.url}}<a/> </br>
   Created: {{statistics.created | date:'M/d/yy h:mm a'}}
+
+  <div>
+    <div class="row"  align="center">
+      <div class="col-sm-4 col-lg-4 col-md-4">
+        <h3>Browsers:</h3>
+        <div id="browsers" style="height: 300px;" class="media-object img-responsive"
+                                ng-init="getGraph('browsers',statistics.browser,'')"></div>
+      </div>
+
+      <div class="col-sm-4 col-lg-4 col-md-4">
+        <h3>Platforms:</h3>
+        <div id="platforms" style="height: 300px;" class="media-object img-responsive"
+                                ng-init="getGraph('platforms',statistics.platform,'')"></div>
+      </div>
+      <div class="col-sm-4 col-lg-4 col-md-4">
+        <h3>Counties:</h3>
+        <div id="counties" style="height: 300px;" class="media-object img-responsive"
+                                ng-init="getGraph('counties',statistics.country,'')"></div>
+      </div>
+      <div class="col-sm-4-centered col-lg-4-centered col-md-4-centered">
+        <h3>Visitors:</h3>
+        <div id="visits" style="height: 300px;" class="media-object img-responsive"
+                                ng-init="getGraph('visits',statistics.ip,'Visitante')"></div> 
+    </div>
+  </div>
+
 </div>

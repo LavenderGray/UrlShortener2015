@@ -1,5 +1,4 @@
 var express = require('express');
-var mongoose = require('mongoose');
 var request = require('request');
 var crypto = require('crypto');
 

@@ -107,6 +107,8 @@ module.exports = (function() {
         redirect: red._id
       };
     }
+    console.log("match");
+    console.log(match);
     var base = {
       id: "redirect",
       value: "$redirect"
@@ -143,8 +145,8 @@ module.exports = (function() {
     });
 
     var f = visit.aggregate(q);
-
     f.exec(function(err, res) {
+      console.log(res);
       if (err) {
         ret({err: 1});
         return;
@@ -173,13 +175,68 @@ module.exports = (function() {
       }
       est["ip"]=arr;
       ret(est);
-      console.log(est);
     });
 
   }
-  app.get('/:id\\+', function(req, res, next) {
+  function getTime(date){
+    if(date=="~"){
+      return null;
+    }
+    return new Date(Date.parse(date));
+  }
+  function addData(ret,key,value){
+    if (ret[key]==undefined) {
+      ret[key]={"$in":[]};
+    }
+    ret[key]["$in"].push(value);
+  }
+  function getDatas(data){
+    if (data == undefined) {
+      return {};
+    }
+    var ret={};
+    var splts=data.split(';');
+    for (var i=0;i<splts.length;i++){
+      var string = splts[i];
+      var split=string.split(':');
+
+      if (split!=undefined && split.length>1) {
+
+        switch (split[0]) {
+          case "date":
+              if (split.length>2) {
+                console.log("a");
+                var rango={
+                  "$gt":getTime(split[1]),
+                  "$lt":getTime(split[2])
+                };
+
+                console.log(rango);
+                ret.date=rango;
+                //addData(ret,"date",rango);
+              }
+            break;
+          case "platform":
+            addData(ret,"platform",split[1]);
+            break;
+          case "browser":
+              addData(ret,"browser",split[1]);
+              break;
+          case "country":
+              addData(ret,"country",split[1]);
+              break;
+          default:
+        }
+      }
+    }
+    console.log(ret);
+    return ret;
+  }
+  function statistics(req, res, next){
     var id = getVariable(req, 'id');
     var format = getVariable(req, 'format');
+    var data = getVariable(req, 'data');
+    var datas = getDatas(data);
     if (format == undefined || format == 'HTML') {
       return next();
     } else if (format == 'JSON') {
@@ -191,17 +248,24 @@ module.exports = (function() {
             } else {
               res.json(sta);
             }
-          });
+          },datas);
 
         } else if (res.err == 1) {
           res.status(404).end();
         } else if (res.err == 2) {
           res.status(400).end();
         }
-      })
+      });
     } else {
       res.status(400).end();
     }
+  }
+
+  app.get('/:id\\+:data', function(req, res, next) {
+    statistics(req, res, next);
+  });
+  app.get('/:id\\+', function(req, res, next) {
+    statistics(req, res, next);
   });
 
 

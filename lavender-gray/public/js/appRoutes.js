@@ -19,6 +19,11 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider',
         controller: 'StatisticsController',
         reloadOnSearch: false
       })
+      .when('/:id\\+:data', {
+        templateUrl: 'views/Statistics/statistics.html',
+        controller: 'StatisticsController',
+        reloadOnSearch: false
+      })
       // Short url
       .when('/:id', {
         templateUrl: 'views/Shorter/redirect.html',

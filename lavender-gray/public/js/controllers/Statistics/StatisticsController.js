@@ -10,11 +10,11 @@ Modulo.controller('StatisticsController', function($scope, $rootScope, $http,
   $rootScope.PageName = "Shorter - Statistics";
   $rootScope.TitleName = $rootScope.PageName;
   $scope.idURLShort = $location.path().split('+')[0].substring(1);
-  console.log("----------------------------");
-  console.log($location.path());
-  $http.get($location.path(), {
+  $scope.datas = $location.path().split('+')[1];
+  $http.get("/API/statistics", {
     params: {
-      format: "JSON"
+      id: $scope.idURLShort,
+      data: $scope.datas
     }
   }).
   success(function(res, status, headers, config) {

@@ -16,7 +16,6 @@ if(Modulo==undefined){var Modulo = angular.module('Controllers', []);}
        url: url
      }).
      success(function(res, status, headers, config) {
-       console.log(res);
        if(res.create==true){
          $scope.idURL=res.redirect.id;
          $scope.result="";
@@ -27,6 +26,7 @@ if(Modulo==undefined){var Modulo = angular.module('Controllers', []);}
      }).
      error(function(data, status, headers, config) {
        if(status==400){
+         $scope.idURL="";
          $scope.result = "URL incorrecta";
        }else if(status==500){
          $scope.idURL="";

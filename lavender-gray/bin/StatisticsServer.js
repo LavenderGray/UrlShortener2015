@@ -1,8 +1,3 @@
-// No Scalable version
-process.env.Base=undefined;
-process.env.Statistics=undefined;
-process.env.QR=undefined;
-
 // modules =================================================
 var express = require('express');
 var app = express();
@@ -16,7 +11,7 @@ var methodOverride = require('method-override');
 // configuration ===========================================
 
 // Mongo conection =========================================
- var db = require('./config/db');
+ var db = require('../config/db');
  mongoose.connect(db.url);
 
 // get all data/stuff of the body (POST) parameters
@@ -29,23 +24,15 @@ app.use(bodyParser.urlencoded({
 })); // parse application/x-www-form-urlencoded
 
 app.use(methodOverride('X-HTTP-Method-Override'));
-app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + '/../public'));
 
 // routes ==================================================
-var apiRouteURL=require('./app/routes/APIURLRoutes');
-var APISaveStatistics=require('./app/routes/APISaveStatisticsRoutes'); // pass our application into our routes
-var apiRouteStadist=require('./app/routes/APIStatisticsRoutes');
-var apiRouteCheckURL=require('./app/routes/CheckURLRoutes');
-var mainRoute=require('./app/routes/mainRoutes');
-var QRgenerate=require('./app/routes/QRgenerator');
-var RouteStadist=require('./app/routes/StatisticsRoutes');
-
-app.use('/API',APISaveStatistics);
-app.use('/API',QRgenerate);
-app.use('/API',apiRouteCheckURL);
+var apiRouteStadist=require('../app/routes/APIStatisticsRoutes'); // pass our application into our routes
+var RouteStadist=require('../app/routes/StatisticsRoutes'); // pass our application into our routes
 app.use('/API',apiRouteStadist);
-app.use('/API',apiRouteURL);
 app.use('/',RouteStadist);
+
+var mainRoute=require('../app/routes/mainRoutes'); // pass our application into our routes
 app.use('/',mainRoute);
 
 // start app ===============================================

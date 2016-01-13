@@ -10,7 +10,6 @@ chai.use(chaiHttp);
 
 var URLTest = "http://google.es";
 var idTest = "x0x";
-var backup = undefined;
 var id;
 
 describe("Statistics test", function() {
@@ -19,7 +18,6 @@ describe("Statistics test", function() {
         url: URLTest
       }, function(err, res) {
         if (!err && res != undefined) {
-          backup = JSON.parse(JSON.stringify(res));
           res.remove();
         }
         redirect.findOne({ //Remove urlShort with the test id(Incorrect id)
@@ -58,8 +56,12 @@ describe("Statistics test", function() {
     it("Test visits",
       function(done) {
         chai.request(app)
-          .get('/' + idTest) // Visit
+          .get('/API/redirect') // Visit
+          .send({
+            'id': idTest
+          })
           .end(function(errU, resU) {
+
             chai.request(app)
               .get('/' + idTest + "+")
               .send({
@@ -67,22 +69,18 @@ describe("Statistics test", function() {
               })
               .end(function(err, res) { // Check statistics
                 res.should.have.status(200);
-
                 var data = res.body;
                 assert.equal(data.count, 1);
                 assert.equal(data.url, URLTest);
                 done();
-              })
-          })
-      }), after(function(done) {
+              });
+          });
+      }),
+    after(function(done) {
       redirect.findOne({ //Restore backup
         url: URLTest
       }, function(err, res) {
         res.remove();
-        if (backup) {
-          new redirect(backup).save();
-        }
-
         done();
       });
     })

@@ -11,7 +11,6 @@ chai.use(chaiHttp);
 describe("Index test", function() {
   it("Index respond 200 code",
     function(done) {
-      this.timeout(30000);
 
       chai.request(app)
         .get('/')
@@ -31,7 +30,6 @@ var id;
 
 describe("Redirect test", function() {
   before(function(done) {
-      this.timeout(30000);
 
       redirect.findOne({ //Remove urlShort with the test url and backup
         url: URLTest

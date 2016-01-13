@@ -68,6 +68,7 @@ module.exports = (function() {
   function randomSecret(n) {
     return crypto.randomBytes(Math.ceil(n / 2)).toString('hex').slice(0, n);
   }
+
   function generateUniqueId(ret) {
     var rand = randomSecret(REDIRECT_ID_SIZE).replace(',', '');
     redirect.findOne({
@@ -80,10 +81,8 @@ module.exports = (function() {
       }
     });
   }
-  function getIP(req) {
-    return (req.headers["X-Forwarded-For"] || req.headers["x-forwarded-for"] || req.client.remoteAddress);
-  }
-  function createRedirection(req, url, ret) {
+
+  function createRedirection(url, ret) {
     if (url != undefined) {
       redirect.findOne({
         url: url
@@ -97,8 +96,7 @@ module.exports = (function() {
           generateUniqueId(function(key) {
             var nred = new redirect({
               url: url,
-              id: key,
-              creator: getIP(req)
+              id: key
             });
             nred.save();
             ret.json({
@@ -111,14 +109,11 @@ module.exports = (function() {
 
     } else {
       ret.status(400).end();
-      /*ret({
-        err: 2
-      });*/
     }
   }
   app.post('/redirect', function(req, res) {
     var url = getVariable(req, 'url');
-    createRedirection(req, url, res);
+    createRedirection(url, res);
   });
 
   return app

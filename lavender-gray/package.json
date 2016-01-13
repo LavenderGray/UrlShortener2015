@@ -24,7 +24,8 @@
     "http-post": "latest",
     "vcards-js": "latest",
     "urlencode": "latest",
-    "qrcode": "latest"
+    "qrcode": "latest",
+    "http-post": "0.1.1"
   },
   "devDependencies":{
     "mocha": "2.3.*",

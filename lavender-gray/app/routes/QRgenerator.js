@@ -18,7 +18,8 @@ module.exports = (function() {
             method: 'post', //Specify the method
 
             json: {
-                url: req.body.url            }
+                url: req.body.url
+            }
         }, function(error, response, body){
             //console.log(body.redirect.id);
             //console.log(body.token);

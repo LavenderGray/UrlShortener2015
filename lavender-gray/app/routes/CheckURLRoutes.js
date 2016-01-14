@@ -50,7 +50,7 @@ module.exports = (function() {
 
         var myWebsite = new monitor({
             website: url,
-            interval: 1
+            interval: 15
         });
 
         var lastUpStatus;

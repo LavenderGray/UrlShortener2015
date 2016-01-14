@@ -29,8 +29,9 @@ app.use(express.static(__dirname + '/../public'));
 // routes ==================================================
 var apiRouteStadist=require('../app/routes/APIStatisticsRoutes'); // pass our application into our routes
 var RouteStadist=require('../app/routes/StatisticsRoutes'); // pass our application into our routes
-app.use('/API',apiRouteStadist);
 app.use('/',RouteStadist);
+
+app.use('/API',apiRouteStadist);
 
 var mainRoute=require('../app/routes/mainRoutes'); // pass our application into our routes
 app.use('/',mainRoute);

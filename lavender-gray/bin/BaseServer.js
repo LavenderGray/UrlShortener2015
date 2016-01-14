@@ -33,6 +33,9 @@ var mainRoute=require('../app/routes/mainRoutes'); // pass our application into 
 app.use('/API',apiRouteCheckURL);
 app.use('/API',APISaveStatistics);
 app.use('/API',apiRouteURL);
+
+var RouteStadist=require('../app/routes/StatisticsRoutes'); // pass our application into our routes
+app.use('/',RouteStadist);
 app.use('/',mainRoute);
 
 // start app ===============================================

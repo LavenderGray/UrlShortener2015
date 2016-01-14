@@ -11,7 +11,6 @@ Modulo.controller('QRController', function($scope, $routeParams, $rootScope, $ht
     $scope.rgb = "";
     $scope.err = "";
     $scope.generar = function() {
-        $scope.url_img = {};
         $http.post('/API/qr', {
             url: $scope.url,
             nombre: $scope.nombre,
@@ -19,10 +18,13 @@ Modulo.controller('QRController', function($scope, $routeParams, $rootScope, $ht
             rgb: $scope.rgb,
             err: $scope.err
         }).success(function(res, status, headers, config) {
-            //console.log(res);
-
-            $scope.url_img = "";
             $scope.url_img = res;
+            $scope.msg="";
         })
+        .error(function(data, status, headers, config) {
+          $scope.url_img = "";
+          $scope.msg="Url no valida";
+        });
+
     }
 });

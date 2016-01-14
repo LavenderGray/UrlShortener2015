@@ -28,12 +28,9 @@ node_modules
 bower_components
 public/libs
 
-# Images extra
-public/imagenes/BlogImages/*
-!public/imagenes/BlogImages/logo.png
+# Resources
+public/pngs/temp.png
 
-public/imagenes/BlogAvatar/*
-!public/imagenes/BlogAvatar/default.jpg
 
 # Others
 *~

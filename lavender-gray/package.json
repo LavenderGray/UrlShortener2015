@@ -25,7 +25,8 @@
     "vcards-js": "latest",
     "urlencode": "latest",
     "qrcode": "latest",
-    "http-post": "0.1.1"
+    "http-post": "0.1.1",
+    "ping-monitor": "0.1.6"
   },
   "devDependencies":{
     "mocha": "2.3.*",

@@ -14,28 +14,46 @@ module.exports = (function() {
             return 0;
         }
         request({
-            url: config.host.local +'API/redirect', //URL to hit
+            url: "http://"+req.headers.host+'/API/redirect', //URL to hit
             method: 'post', //Specify the method
 
             json: {
                 url: req.body.url
             }
         }, function(error, response, body){
+            if(error || body==undefined || body.redirect==undefined){
+              res.status(400).end();
+              return;
+            }
             //console.log(body.redirect.id);
             //console.log(body.token);
             //token = body.token;
 
             var json = "lol";
-            var urlShortComplete = config.host.local + body.redirect.id;
-            var vcard = createVcard(req, urlShortComplete);
+            var urlShortComplete = req.headers.host +"/"+ body.redirect.id;
+            //var vcard = createVcard(req, urlShortComplete);
             //console.log(vcard);
-            createQrLocal(vcard.getFormattedString(), json, req, res);
+            createQrLocal(getVcard(req, urlShortComplete), json, req, res);
         });
 
 
 
 
     })
+
+    function getVcard(req, urlShortComplete){
+      r="BEGIN:VCARD\nVERSION:3.0\n";
+
+      if (req.body.nombre != undefined &&req.body.nombre!="") {
+        r+="N:"+req.body.nombre+"\n"
+      }
+      if (req.body.apellidos != undefined&&req.body.nombre!="") {
+        r+="FN:"+req.body.apellidos+"\n"
+      }
+
+      r+="URL;TYPE=INTERNET:"+urlShortComplete+"\nEND:VCARD"
+      return r;
+    }
 
     function createVcard(req, urlShortComplete){
         //Create vCard

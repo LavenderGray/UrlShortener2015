@@ -3,6 +3,7 @@ var express = require('express'),
     fs = require('fs'),
     vCard = require('vcards-js'),
     urlencode = require('urlencode'),
+    config = require('../../config/conf'),
     request = require('request');
 module.exports = (function() {
     var app = express.Router();
@@ -13,7 +14,7 @@ module.exports = (function() {
             return 0;
         }
         request({
-            url: 'http://localhost:8080/API/redirect', //URL to hit
+            url: config.host.local +'API/redirect', //URL to hit
             method: 'post', //Specify the method
 
             json: {
@@ -24,7 +25,7 @@ module.exports = (function() {
             //token = body.token;
 
             var json = "lol";
-            var urlShortComplete = "http://localhost:8080/" + body.redirect.id;
+            var urlShortComplete = config.host.local + body.redirect.id;
             var vcard = createVcard(req, urlShortComplete);
             //console.log(vcard);
             createQrLocal(vcard.getFormattedString(), json, req, res);

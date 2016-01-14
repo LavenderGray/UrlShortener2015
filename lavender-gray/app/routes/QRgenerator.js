@@ -19,14 +19,14 @@ module.exports = (function() {
             json: {
                 url: req.body.url            }
         }, function(error, response, body){
-            console.log(body.redirect.id);
+            //console.log(body.redirect.id);
             //console.log(body.token);
             //token = body.token;
-             var json = "lol";
 
+            var json = "lol";
             var urlShortComplete = "http://localhost:8080/" + body.redirect.id;
             var vcard = createVcard(req, urlShortComplete);
-            console.log(vcard);
+            //console.log(vcard);
             createQrLocal(vcard.getFormattedString(), json, req, res);
         });
 
@@ -39,33 +39,34 @@ module.exports = (function() {
         //Create vCard
         vcard = vCard();
         //Json to VCard
-        if (req.body.firstName != undefined) vcard.firstName = req.body.firstName;
-        if (req.body.lastName != undefined) vcard.lastName = req.body.lastName;
-        if (req.body.organization != undefined) vcard.organization = req.body.organization;
-        if (req.body.photo != undefined) vcard.photo.attachFromUrl(req.body.photo);
-        if (req.body.workPhone != undefined) vcard.workPhone = req.body.workPhone;
-        if (req.body.birthday != undefined) vcard.birthday = req.body.birthday;
-        if (req.body.title != undefined) vcard.title = req.body.title;
-        vcard.firstName = "Ruben";
-        vcard.lastName = "Gabas";
+        if (req.body.nombre != undefined) vcard.firstName = req.body.nombre;
+        if (req.body.apellidos != undefined) vcard.lastName = req.body.apellidos;
 
+        vcard.url = urlShortComplete;
 
         return vcard;
     }
 
 
     function createQrLocal(add, json, req, res) {
+
+
         //Our Qr local library only accept minium, medium high and max level or error
-        var errLevel = {"L": "minium", "M": "medium", "Q": "high", "H": "max"};
+        var errLevel = {"min": "minium", "med": "medium", "hig": "high", "max": "max"};
         var opt = {};
         //Create options for qr.save
-        if (req.body.color != undefined) {
-            if (req.body.color.r != undefined) opt.r = req.body.color.r;
-            if (req.body.color.g != undefined) opt.g = req.body.color.g;
-            if (req.body.color.b != undefined) opt.b = req.body.color.b;
+        if (req.body.rgb != undefined) {
+            var rgb = req.body.rgb.split(" ");
+            opt.r = rgb[0];
+            opt.g = rgb[1];
+            opt.b = rgb[2];
         }
-        if (req.body.errLevel != undefined) opt.err = errLevel[req.body.errLevel];
-        if (req.body.logo != undefined) opt.logo = new Buffer(req.body.logo);
+
+
+        if (req.body.err != undefined) opt.err = errLevel[req.body.err];
+        var img = fs.readFileSync('public/pngs/pelli.png');
+        console.log(img);
+        opt.logoPath = new Buffer(img);
 
         qr.save(add, opt, function (err, buf) {
             if (err) res.sendStatus(400);

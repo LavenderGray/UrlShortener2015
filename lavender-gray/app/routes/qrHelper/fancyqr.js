@@ -8,13 +8,11 @@ var QRCode = require('qrcode');
 var drawLogo = function(logoPath, canvas, callback) {
     var img = new QRCode.canvas.Image(),
         ctx = canvas.getContext('2d');
-    if (img.width > 30 || img.height > 30){
-        callback("Image too big");
-        return;
-    }
+
+    console.log(canvas.width);
     img.src = logoPath;
-    var x = (140 - img.width) / 2,
-        y = (140 - img.height) / 2;
+    var x = (canvas.width - img.width) / 2,
+        y = (canvas.height - img.height) / 2;
     ctx.drawImage(img, x, y, img.width, img.height);
     callback(null, canvas);
 };

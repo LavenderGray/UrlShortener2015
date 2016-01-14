@@ -58,6 +58,7 @@ module.exports = (function() {
         //Create options for qr.save
         if (req.body.rgb != undefined) {
             var rgb = req.body.rgb.split(" ");
+            console.log(rgb);
             opt.r = rgb[0];
             opt.g = rgb[1];
             opt.b = rgb[2];

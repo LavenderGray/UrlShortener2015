@@ -76,6 +76,32 @@ describe("Statistics test", function() {
               });
           });
       }),
+    it("Test visits patrons",
+      function(done) {
+        var test = function(patron, count, end) {
+          chai.request(app)
+            .get('/' + idTest + "+" + patron)
+            .send({
+              'format': 'JSON'
+            })
+            .end(function(err, res) { // Check statistics
+              res.should.have.status(200);
+              var data = res.body;
+              assert.equal(data.count, count);
+              assert.equal(data.url, URLTest);
+              end();
+            });
+        };
+        test("date:~-~", 1, function() {
+          test("date:~:1-1-1999", 0, function() {
+            test("country:Unknow", 1, function() {
+              test("country:ES", 0, function() {
+                done();
+              })
+            })
+          })
+        });
+      }),
     after(function(done) {
       redirect.findOne({ //Restore backup
         url: URLTest

@@ -1,4 +1,4 @@
-export PORT_INIT=8111
+export PORT_INIT=8100
 PORT=$(($PORT_INIT+31)) node StatisticsServer.js &
 export B1=$(echo $!)
 PORT=$(($PORT_INIT+32)) node StatisticsServer.js &

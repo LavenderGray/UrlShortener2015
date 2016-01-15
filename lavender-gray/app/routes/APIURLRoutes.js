@@ -1,6 +1,8 @@
 var express = require('express');
 var request = require('request');
 var crypto = require('crypto');
+var monitor = require('ping-monitor');
+
 
 var REDIRECT_ID_SIZE = 5;
 
@@ -9,7 +11,8 @@ module.exports = (function() {
   var redirect = require('../models/Redirect');
 
   var app = express.Router();
-
+  var http = require('http').Server(app),
+      io = require('socket.io')(http);
   /*
    * Extra functions
    */
@@ -113,8 +116,67 @@ module.exports = (function() {
   }
   app.post('/redirect', function(req, res) {
     var url = getVariable(req, 'url');
+    //startMonitoring(req);
     createRedirection(url, res);
   });
+
+
+  io.on('connect',function(socket,req){
+    socket.emit ('connection');
+
+    var url = getVariable(req, 'url');
+
+
+    var myWebsite = new monitor({
+      website: url,
+      interval: 15
+
+    });
+
+    var lastUpStatus;
+
+    myWebsite.on('error', function (msg) {
+      console.log(msg);
+    });
+
+    myWebsite.on('up', function (res) {
+      console.log('UP: ' + res.website);
+      lastUpStatus = new Date();
+      console.log(lastUpStatus);
+      socket.emit("infoMonitor", "<200 url alcanzable>")
+      saveBDD(true);
+    });
+
+    myWebsite.on('down', function (res) {
+      saveBDD(false);
+      socket.emit("infoMonitor", "<404 url no alcanzable> Check Status: " +
+                  'DOWN: ' + res.website + ' \n STATUS: ' + res.statusMessage)
+      console.log('DOWN: ' + res.website + ' \n STATUS: ' + res.statusMessage);
+    });
+
+    // this event is required to be handled in all Node-Monitor instances
+    myWebsite.on('error', function (res) {
+      saveBDD(false);
+      socket.emit("infoMonitor", "<404 url no alcanzable> Check Status: " +
+          'DOWN: ' + res.website + ' \n STATUS: ' + res.statusMessage)
+      console.log('ERROR occured trying to load ' + res.website);
+      myWebsite.stop();
+    });
+
+    myWebsite.on('stop', function (website) {
+      console.log(website + ' monitor has stopped.');
+    });
+  })
+
+  function saveBDD(bool) {
+    redirect.findOne({
+      url: url
+    }).exec({}, function (err2, red) {
+          red.available = bool,
+          red.latest_status = new Date();
+      red.save();
+    })
+  }
 
   return app
 })();

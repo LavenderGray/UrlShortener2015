@@ -1,6 +1,7 @@
 var app = require("../server"),
   redirect = require("../app/models/Redirect");
 
+var io = require('socket.io-client');
 var chai = require('chai');
 var chaiHttp = require('chai-http');
 var should = chai.should();
@@ -12,6 +13,8 @@ var urlWrong = "http://aasdas.kiii";
 var urlCorrect = "http://google.com";
 var backup = undefined;
 var id;
+
+var options = {traansports:['websocket'],'force new connection': true};
 
 describe("Check URL", function() {
   before(function(done) {
@@ -52,7 +55,18 @@ describe("Check URL", function() {
             done();
           });
       }
-    ), after(function(done) {
+    ),
+      it('Open websocket', function(done){
+      this.timeout(20000);
+      //Connect to server
+      var client = io.connect("http://localhost:8080", options);
+      var i = 0;
+      client.on('connect', function(msg){
+          console.log(msg);
+          i++;
+          if (i == 1) done();
+      });
+  }), after(function(done) {
       redirect.findOne({ //Restore backup
         url: urlCorrect
       }, function(err, res) {

@@ -1,7 +1,7 @@
 var express = require('express');
 var mongoose = require('mongoose');
 var request = require("request");
-var monitor = require('ping-monitor');
+
 
 module.exports = (function() {
 
@@ -38,47 +38,13 @@ module.exports = (function() {
                 if (error) {
                     res.status(400).end();
                 } else {
-                    startMonitoring(req);
                     next();
                 }
             });
         }
     })
 
-    function startMonitoring(req) {
-        var url = getVariable(req, 'url');
 
-        var myWebsite = new monitor({
-            website: url,
-            interval: 15
-        });
-
-        var lastUpStatus;
-
-        myWebsite.on('error', function (msg) {
-            console.log(msg);
-        });
-
-        myWebsite.on('up', function (res) {
-            console.log('UP: ' + res.website);
-            lastUpStatus = new Date();
-            console.log(lastUpStatus);
-        });
-
-        myWebsite.on('down', function (res) {
-            console.log('DOWN: ' + res.website + ' \n STATUS: ' + res.statusMessage);
-        });
-
-        // this event is required to be handled in all Node-Monitor instances
-        myWebsite.on('error', function (res) {
-            console.log('ERROR occured trying to load ' + res.website);
-            myWebsite.stop();
-        });
-
-        myWebsite.on('stop', function (website) {
-            console.log(website + ' monitor has stopped.');
-        });
-    }
 
     return app
 })();

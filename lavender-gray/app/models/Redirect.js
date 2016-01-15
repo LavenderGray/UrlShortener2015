@@ -14,5 +14,11 @@ module.exports = mongoose.model('Redirect', {
   },created: {
     type: Date,
     default: new Date()
+  },available: {
+    type: Boolean,
+    default: true
+  },latest_status: {
+    type: Date,
+    default: new Date()
   }
 });
